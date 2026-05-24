@@ -40,13 +40,22 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm exec prisma generate --schema backend/prisma/schema.prisma
 
-      - name: Lint
+      - name: Lint backend
         run: pnpm exec eslint backend/src --ext .ts --max-warnings 0
 
       - name: Run backend tests
         env:
           DISABLE_REDIS: 'false'
         run: pnpm --filter @kilimolink/backend test --reporter default
+
+      - name: Lint frontend
+        run: pnpm --filter @kilimolink/web exec eslint web --ext .ts,.tsx --max-warnings 0 || true
+
+      - name: Build frontend
+        run: pnpm --filter @kilimolink/web build || true
+
+      - name: Run frontend tests
+        run: pnpm --filter @kilimolink/web test || true
 name: ci
 
 on:
