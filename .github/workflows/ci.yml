@@ -63,8 +63,15 @@ jobs:
       - name: Build frontend
         run: pnpm --filter @kilimolink/web build
 
-      - name: Run frontend tests
-        run: pnpm --filter @kilimolink/web test
+      - name: Run frontend tests (if present)
+        run: |
+          set -e
+          # detect common test file patterns in the web package
+          if git ls-files -- "web/**/*.test.*" "web/**/*.spec.*" | grep -q .; then
+            pnpm --filter @kilimolink/web test
+          else
+            echo "No frontend tests found under web/, skipping frontend test step."
+          fi
 name: ci
 
 on:
