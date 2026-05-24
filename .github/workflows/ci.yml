@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
     services:
       redis:
         image: redis:7
@@ -26,7 +29,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
       - name: Enable corepack (pnpm)
@@ -34,8 +37,14 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --shamefully-hoist
 
       - name: Generate Prisma Client
         run: pnpm exec prisma generate --schema backend/prisma/schema.prisma
@@ -49,13 +58,13 @@ jobs:
         run: pnpm --filter @kilimolink/backend test --reporter default
 
       - name: Lint frontend
-        run: pnpm --filter @kilimolink/web exec eslint web --ext .ts,.tsx --max-warnings 0 || true
+        run: pnpm --filter @kilimolink/web exec eslint web --ext .ts,.tsx --max-warnings 0
 
       - name: Build frontend
-        run: pnpm --filter @kilimolink/web build || true
+        run: pnpm --filter @kilimolink/web build
 
       - name: Run frontend tests
-        run: pnpm --filter @kilimolink/web test || true
+        run: pnpm --filter @kilimolink/web test
 name: ci
 
 on:
