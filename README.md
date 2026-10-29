@@ -1,3 +1,5 @@
+> **ARCHIVED** - Superseded by [KilimoLink](https://github.com/geraldkombo/KilimoLink), the canonical and actively developed codebase. Kept for historical reference only.
+
 # KilimoLink: Hyperlocal Urban Food Resilience
 
 **KilimoLink** is a direct-to-city marketplace designed for the **Innovate4Cities 2026** challenge. It connects urban residents with nearby farmers to reduce food waste and transport emissions.
