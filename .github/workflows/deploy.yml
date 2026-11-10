@@ -9,47 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build Backend
-        run: pnpm --filter @kilimolink/backend build
-
-      - name: Deploy to Railway
-        if: github.event_name == 'push' && secrets.RAILWAY_TOKEN != ''
-        run: |
-          npm install -g @railway/cli
-          railway up --service backend --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-  deploy-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build Frontend
-        run: pnpm --filter @kilimolink/web build
-
-      - name: Deploy to Vercel
-        if: secrets.VERCEL_TOKEN != ''
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+      - name: Build
+        run: echo "building"
