@@ -1,6 +1,9 @@
 {
   "version": 2,
   "framework": "vite",
+  "installCommand": "cd web && pnpm install --frozen-lockfile",
+  "buildCommand": "cd web && pnpm run build",
+  "outputDirectory": "web/dist",
   "rewrites": [
     {
       "source": "/(.*)",
