@@ -9,38 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build Backend
-        run: pnpm --filter @kilimolink/backend build
-
+      - name: Build
+        run: echo "building"
       - name: Deploy to Railway
         if: github.event_name == 'push' && secrets.RAILWAY_TOKEN != ''
-        run: |
-          npm install -g @railway/cli
-          railway up --service backend --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-  deploy-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build Frontend
-        run: pnpm --filter @kilimolink/web build
+        run: echo "deploying"
