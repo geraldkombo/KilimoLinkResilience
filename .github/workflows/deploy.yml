@@ -12,5 +12,5 @@ jobs:
       - name: Build
         run: echo "building"
       - name: Deploy to Railway
-        if: github.event_name == 'push' && secrets.RAILWAY_TOKEN != ''
+        if: github.event_name == 'push'
         run: echo "deploying"
