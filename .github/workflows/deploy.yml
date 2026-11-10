@@ -9,8 +9,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build
-        run: echo "building"
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Backend
+        run: pnpm --filter @kilimolink/backend build
+
       - name: Deploy to Railway
-        if: github.event_name == 'push'
-        run: echo "deploying"
+        run: |
+          if [ -n "$RAILWAY_TOKEN" ]; then
+            npm install -g @railway/cli
+            railway up --service backend --detach
+          else
+            echo "RAILWAY_TOKEN not set, skipping Railway deploy"
+          fi
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Frontend
+        run: pnpm --filter @kilimolink/web build
+
+      - name: Deploy to Vercel
+        run: |
+          if [ -n "$VERCEL_TOKEN" ]; then
+            npx @vercel/cli deploy --prod
+          else
+            echo "VERCEL_TOKEN not set, skipping Vercel deploy"
+          fi
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
